@@ -1,0 +1,19 @@
+{
+  "name": "spacewalk",
+  "version": "0.0.0",
+  "description": "Physics-based space puzzle/adventure game. Ludum Dare #27 entry for theme 10 Seconds.",
+  "main": "src/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "game",
+    "crafty",
+    "simulation"
+  ],
+  "author": "The Brothers Hinebaugh",
+  "license": "BSD",
+  "dependencies": {
+    "connect": "~2.8.4"
+  }
+}

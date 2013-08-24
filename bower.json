@@ -1,0 +1,18 @@
+{
+  "name": "Spacewalk",
+  "version": "0.0.0",
+  "main": "src/game.js",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "requirejs": "~2.1.8",
+    "crafty": "0.6.0-alpha",
+    "modernizr": "~2.6.2"
+  }
+}
