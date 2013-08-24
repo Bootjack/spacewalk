@@ -1,6 +1,7 @@
 #cr-stage {
-    background: white;
-    border: 1px solid lightgray;
+    background: hsl(0, 0, 10);
+    border: 1px solid black;
+    float: left;
     margin: 0.5em auto;
 }
 
@@ -8,6 +9,7 @@
     background: white;
     border: 1px solid lightgray;
     color: gray;
+    float: left;
     font: 0.8em/1em monospace;
     min-height: 2em;
     margin: 0 auto;
