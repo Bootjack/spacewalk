@@ -9,7 +9,7 @@ require([
     Crafty.c('Astronaut', {
         init: function () {
             this.requires('2D, Canvas, Color, Mouse, Keyboard, Delay')
-                .attr({w: 15, h: 30})
+                .attr({w: 16, h: 32})
                 .color('rgba(250, 250, 250, 1.0)');
             return this;
         },
@@ -31,13 +31,14 @@ require([
                 quantity: 100
             });
             this.engine = Crafty.e('Drive')
-                .attr({rotation: -90})
                 .drive({
                     driven: this,
                     volume: 1,
                     efficiency: 1,
                     inputs: [this.propellant],
-                    y: this._h
+                    x: 0.6 * this._w,
+                    y: 0.2 * this._h,
+                    angle: -0.5 * Math.PI
                 });
             this.shoulders = Crafty.e('2D, Canvas, Color')
                 .attr({w: 21, h: 14, x: this._x - 3, y: this._y + 7})

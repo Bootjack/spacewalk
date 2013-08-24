@@ -36,10 +36,12 @@ require(['src/modules/storage', 'src/modules/exchange'], function () {
                     quantity = adjustment * this.efficiency * this.volume * this.throttle;
                     this.meter += quantity;
 
-                    angle = this.driven.body.GetAngle();
+                    angle = this.driven.body.GetAngle() + this.angle;
                     vector = new Crafty.math.Vector2D(Math.cos(angle), Math.sin(angle));
                     vector.scaleToMagnitude(quantity);
-                    point = this.driven.body.GetWorldCenter();
+                    point = this.driven.body.GetWorldPoint(
+                        new Box2D.Common.Math.b2Vec2(this.x, this.y)
+                    );
 
                     if (this.isAngular) {
                             this.driven.body.ApplyTorque(quantity);
@@ -63,10 +65,9 @@ require(['src/modules/storage', 'src/modules/exchange'], function () {
             this.efficiency = config.efficiency || this.efficiency;
             config.permanent = true;
             this.exchange(config);
-            this.attr({
-                x: this.driven.x + (config.x || 0),
-                y: this.driven.y + (config.y || 0)
-            });
+            this.x = config.x / Crafty._PX2M;
+            this.y = config.y / Crafty._PX2M;
+            this.angle = config.angle;
             if (config.isAngular) {
                 this.isAngular = true;
             }

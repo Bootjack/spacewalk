@@ -12,8 +12,8 @@ require([
         Crafty.background('rgb(15, 10, 20)');
 
         astronaut = Crafty.e('Astronaut').attr({
-            x: 50,
-            y: 50
+            x: 300,
+            y: 300
         }).astronaut();
         astronaut.body.SetAngle(-0.12 * Math.PI);
 

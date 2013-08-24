@@ -98,16 +98,16 @@ require(['src/modules/storage'], function () {
                 var i, actual, adjustment, proportion, quantity, storage;
                 adjustment = 1;
                 for (i = 0; i < this.inputs.length; i += 1) {
-                    proportion = this.inputs[i].proportion * INTERVAL / 1000;
+                    proportion = this.inputs[i].proportion;
                     storage = this.inputs[i].module;
-                    quantity = proportion * adjustment * this.volume;
+                    quantity = proportion * adjustment * this.volume * INTERVAL / 1000;
                     actual = storage.remove(quantity);
                     adjustment *= actual / quantity;
                 }
                 for (i = 0; i < this.outputs.length; i += 1) {
                     proportion = this.outputs[i].proportion;
                     storage = this.outputs[i].module;
-                    quantity = proportion * adjustment * this.volume;
+                    quantity = proportion * adjustment * this.volume * INTERVAL / 1000;
                     storage.add(quantity);
                     if (0 === i) {
                         this.meter += quantity;

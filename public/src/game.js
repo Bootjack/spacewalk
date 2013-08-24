@@ -19,24 +19,15 @@ var require, window;
 
                 Crafty.e('2D, HTML, Mouse')
                     .attr({x: 25, y: 25, w: 250, h: 25})
-                    .replace('<a href="#" class="scene-link">Tugboat Test</a>')
+                    .replace('<a href="#" class="scene-link">Astronaut Test</a>')
                     .bind('Click', function (e) {
                         e.preventDefault();
-                        Crafty.scene('test-tugboat');
-                    });
-
-                Crafty.e('2D, HTML, Mouse')
-                    .attr({x: 25, y: 75, w: 250, h: 25})
-                    .replace('<a href="#" class="scene-link">Guidance Test</a>')
-                    .bind('Click', function (e) {
-                        e.preventDefault();
-                        Crafty.scene('test-guidance');
+                        Crafty.scene('test-astronaut');
                     });
 
                 //when everything is loaded, run the main scene
                 require([
-                    'src/scenes/test-silo',
-                    'src/scenes/test-tugboat'
+                    'src/scenes/test-astronaut'
                 ], function () {
 
                 });
