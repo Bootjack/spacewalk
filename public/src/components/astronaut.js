@@ -18,12 +18,12 @@ require([
             var bodyDef, suitJointDef, suitJoint;
             bodyDef = new Box2D.Dynamics.b2BodyDef;
             bodyDef.type = Box2D.Dynamics.b2Body.b2_dynamicBody;
-            bodyDef.position.Set(this._x / Crafty._PX2M, this._y / Crafty._PX2M);
+            bodyDef.position.Set(this._x / Crafty.box2D.PTM_RATIO, this._y / Crafty.box2D.PTM_RATIO);
             this.box2d({
                 bodyDef: bodyDef,
-                density: 0.1,
+                density: 1,
                 friction: 0.8,
-                elasticity: 0.1
+                restitution: 0.1
             });
             
             this.eva = Crafty.e('2D, EVA_Suit, Canvas, Color')
@@ -37,7 +37,7 @@ require([
             suitJoint = Crafty.box2D.world.CreateJoint(suitJointDef);
             
             this.visor = Crafty.e('2D, Canvas, Color')
-                .attr({w: 11, h: 8, x: this._x + 2, y: this._y + 2})
+                .attr({w: 12, h: 8, x: this._x + 2, y: this._y + 2})
                 .color('rgba(0, 0, 0, 1.0)');
             this.attach(this.visor);
             this.bind('EnterFrame', this.render);

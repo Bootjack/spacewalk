@@ -65,8 +65,8 @@ require(['src/modules/storage', 'src/modules/exchange'], function () {
             this.efficiency = config.efficiency || this.efficiency;
             config.permanent = true;
             this.exchange(config);
-            this.x = config.x / Crafty._PX2M;
-            this.y = config.y / Crafty._PX2M;
+            this.x = config.x / Crafty.box2D.PTM_RATIO;
+            this.y = config.y / Crafty.box2D.PTM_RATIO;
             this.angle = config.angle;
             if (config.isAngular) {
                 this.isAngular = true;

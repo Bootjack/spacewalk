@@ -2,6 +2,7 @@ var Crafty, require;
 
 require([
     'src/components/astronaut',
+    'src/components/satellite',
     'src/components/walls'
 ], function () {
     'use strict';
@@ -9,6 +10,10 @@ require([
     Crafty.scene('test-astronaut', function () {
         var astronaut, walls;
 
+        Crafty.viewport.init(800, 600, 'cr-stage');
+        Crafty.viewport.clampToEntities = false;
+        Crafty.viewport.mouselook(true);
+               
         Crafty.background('rgb(15, 10, 20)');
 
         astronaut = Crafty.e('Astronaut').attr({
@@ -20,10 +25,17 @@ require([
         astronaut.bind('EnterFrame', function () {
             var self = this;
             document.getElementById('spine-out').innerHTML = 
-                'Propellant remaining: ' + astronaut.eva.propellant.quantity;
-            if (astronaut.isDown(Crafty.keys.UP_ARROW) || astronaut.isDown(Crafty.keys.W)) {
+                'Propellant remaining: ' + (astronaut.eva.propellant.quantity / 10).toFixed(1) + ' seconds';
+            if (astronaut.isDown(Crafty.keys.W)) {
                 astronaut.eva.jets[2].throttle = 1;
                 astronaut.eva.jets[3].throttle = 1;
+            } else if (astronaut.isDown(Crafty.keys.S)) {
+                astronaut.eva.jets[0].throttle = 1;
+                astronaut.eva.jets[1].throttle = 1;
+            } else  if (astronaut.isDown(Crafty.keys.A)) {
+                astronaut.eva.jets[5].throttle = 1;
+            } else if (astronaut.isDown(Crafty.keys.D)) {
+                astronaut.eva.jets[4].throttle = 1;
             } else  if (astronaut.isDown(Crafty.keys.Q)) {
                 astronaut.eva.jets[0].throttle = 0.5;
                 astronaut.eva.jets[3].throttle = 0.5;
@@ -35,9 +47,14 @@ require([
                 astronaut.eva.jets[1].throttle = 0;
                 astronaut.eva.jets[2].throttle = 0;
                 astronaut.eva.jets[3].throttle = 0;
-            }
-        })
+                astronaut.eva.jets[4].throttle = 0;
+                astronaut.eva.jets[5].throttle = 0;
 
-        walls = Crafty.e('Walls');
+            }
+        });
+        
+        Crafty.e('Satellite').attr({x: 100, y: 100}).satellite();
+        
+        Crafty.e('Walls');
     });
 });
