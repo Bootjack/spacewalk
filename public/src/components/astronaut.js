@@ -23,7 +23,7 @@ require([
                 bodyDef: bodyDef,
                 density: 1,
                 friction: 0.8,
-                restitution: 0.1
+                restitution: 0.2
             });
             
             this.eva = Crafty.e('2D, EVA_Suit, Canvas, Color')

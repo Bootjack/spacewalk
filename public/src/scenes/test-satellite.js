@@ -2,12 +2,13 @@ var Crafty, require;
 
 require([
     'src/components/astronaut',
+    'src/components/satellite',
     'src/components/walls'
 ], function () {
     'use strict';
 
-    Crafty.scene('test-astronaut', function () {
-        var astronaut, walls;
+    Crafty.scene('test-satellite', function () {
+        var i, astronaut, walls;
 
         Crafty.viewport.init(800, 600, 'cr-stage');
         Crafty.viewport.clampToEntities = false;
@@ -51,6 +52,10 @@ require([
 
             }
         });
+        
+        for (i = 0; i < 14; i += 1) {
+            Crafty.e('Satellite').attr({x: Math.random() * 700, y: Math.random() * 500}).satellite();        
+        }
         
         Crafty.e('Walls');
     });
