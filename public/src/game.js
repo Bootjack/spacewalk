@@ -10,7 +10,7 @@ var require, window;
             Crafty.init(800, 600);
             Crafty.canvas.init();
             Crafty.box2D.init(0, 0, 16, true);
-            Crafty.box2D.showDebugInfo();
+            //Crafty.box2D.showDebugInfo();
 
             //the loading screen - that will be display while assets loaded
             Crafty.scene("loading", function () {

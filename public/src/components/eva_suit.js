@@ -21,7 +21,8 @@ require([
                     bodyDef: bodyDef,
                     density: 6.0 * 0.5,
                     friction: 0.5,
-                    restitution: 0.5
+                    restitution: 0.5,
+                    groupIndex: -1
                 });
 
             this.propellant = Crafty.e('Storage').storage({

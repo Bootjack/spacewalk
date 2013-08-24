@@ -24,7 +24,7 @@ require(['src/modules/storage', 'src/modules/exchange'], function () {
                     }
                 }
 
-                if (this.active) {
+                if (this.active && this.throttle) {
                     for (i = 0; i < this.inputs.length; i += 1) {
                         proportion = this.inputs[i].proportion;
                         storage = this.inputs[i].module;
