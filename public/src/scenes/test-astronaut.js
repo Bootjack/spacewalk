@@ -20,11 +20,21 @@ require([
         astronaut.bind('EnterFrame', function () {
             var self = this;
             document.getElementById('spine-out').innerHTML = 
-                'Propellant remaining: ' + astronaut.propellant.quantity;
+                'Propellant remaining: ' + astronaut.eva.propellant.quantity;
             if (astronaut.isDown(Crafty.keys.UP_ARROW) || astronaut.isDown(Crafty.keys.W)) {
-                astronaut.engine.throttle = 1;
+                astronaut.eva.jets[2].throttle = 1;
+                astronaut.eva.jets[3].throttle = 1;
+            } else  if (astronaut.isDown(Crafty.keys.Q)) {
+                astronaut.eva.jets[0].throttle = 0.5;
+                astronaut.eva.jets[3].throttle = 0.5;
+            } else if (astronaut.isDown(Crafty.keys.E)) {
+                astronaut.eva.jets[1].throttle = 0.5;
+                astronaut.eva.jets[2].throttle = 0.5;
             } else {
-                astronaut.engine.throttle = 0;
+                astronaut.eva.jets[0].throttle = 0;
+                astronaut.eva.jets[1].throttle = 0;
+                astronaut.eva.jets[2].throttle = 0;
+                astronaut.eva.jets[3].throttle = 0;
             }
         })
 
