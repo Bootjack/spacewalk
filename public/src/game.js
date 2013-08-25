@@ -30,10 +30,19 @@ var require, window;
                         Crafty.scene('test-satellite');
                     });
 
+                Crafty.e('2D, HTML, Mouse')
+                    .attr({x: 25, y: 125, w: 250, h: 25})
+                    .replace('<a href="#" class="scene-link">Grappling Gun Test</a>')
+                    .bind('Click', function (e) {
+                        e.preventDefault();
+                        Crafty.scene('test-grappling-gun');
+                    });
+
                 //when everything is loaded, run the main scene
                 require([
                     'src/scenes/test-astronaut',
-                    'src/scenes/test-satellite'
+                    'src/scenes/test-satellite',
+                    'src/scenes/test-grappling-gun'
                 ], function () {
 
                 });

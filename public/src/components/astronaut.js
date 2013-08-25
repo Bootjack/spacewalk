@@ -51,6 +51,8 @@ require([
                     .color('rgba(240, 240, 240, 1.0)')
                     .box2d({
                         bodyType: 'dynamic',
+                        friction: 0.8,
+                        restitution: 0.1,
                         groupIndex: -1
                     }),
                 right: Crafty.e('2D, Box2D, Canvas, Color, Delay')
@@ -58,6 +60,8 @@ require([
                     .color('rgba(240, 240, 240, 1.0)')
                     .box2d({
                         bodyType: 'dynamic',
+                        friction: 0.8,
+                        restitution: 0.1,
                         groupIndex: -1
                     })
             }
@@ -125,7 +129,7 @@ require([
                     if (arm && surface) {
                         grasp = new Box2D.Dynamics.Joints.b2FrictionJointDef();
                         grasp.maxForce = 8;
-                        grasp.maxTorque = 0.05 * Math.PI;
+                        grasp.maxTorque = 0.5 * Math.PI;
                         grasp.Initialize(arm.body, surface, arm.body.GetWorldPoint(localHandVector));
                         arm.graspJoint = Crafty.box2D.world.CreateJoint(grasp);
                     }
