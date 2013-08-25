@@ -6,7 +6,7 @@ require([], function () {
     Crafty.c('Debris', {
         init: function () {
             this.requires('2D, Box2D, Canvas, Color')
-                .attr({w: 512, h: 256})
+                .attr({w: 380, h: 256})
                 .color('rgba(85, 85, 95, 1.0)');
             return this;   
         },        

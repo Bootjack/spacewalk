@@ -69,7 +69,7 @@ require([
             leftArmJointDef.upperAngle = 0.4 * Math.PI;
             leftArmJointDef.enableMotor = true;
             leftArmJointDef.motorSpeed = 0;
-       		leftArmJointDef.maxMotorTorque = 0.25;
+       		leftArmJointDef.maxMotorTorque = 0.15;
             leftArmJointDef.Initialize(
                 this.body,
                 this.arms.left.body,
@@ -86,7 +86,7 @@ require([
             rightArmJointDef.upperAngle = 0.4 * Math.PI;
             rightArmJointDef.enableMotor = true;
             rightArmJointDef.motorSpeed = 0;
-       		rightArmJointDef.maxMotorTorque = 0.25;
+       		rightArmJointDef.maxMotorTorque = 0.15;
             rightArmJointDef.Initialize(
                 this.body,
                 this.arms.right.body,
@@ -99,34 +99,36 @@ require([
             var listener = new Box2D.Dynamics.b2ContactListener()
             listener.BeginContact = function (contact) {
                 var arm, bodyA, bodyB, grasp, localHandVector, surface;
-                bodyA = contact.GetFixtureA().GetBody();
-                bodyB = contact.GetFixtureB().GetBody();
-                if (self.arms.left.body === bodyA || self.arms.left.body === bodyB) {
-                    arm = self.arms.left;
-                    localHandVector = new Box2D.Common.Math.b2Vec2(
-                        2 / Crafty.box2D.PTM_RATIO,
-                        2.5 / Crafty.box2D.PTM_RATIO
-                    );
-                } else if (self.arms.right.body === bodyA || self.arms.right.body === bodyB) {
-                    arm = self.arms.right;
-                    localHandVector = new Box2D.Common.Math.b2Vec2(
-                        13 / Crafty.box2D.PTM_RATIO,
-                        2.5 / Crafty.box2D.PTM_RATIO
-                    );
-                }
-                
-                if (self.arms.left.body === bodyA || self.arms.right.body === bodyA) {
-                    surface = bodyB;
-                } else if (self.arms.left.body === bodyB || self.arms.right.body === bodyB) {
-                    surface = bodyA;
-                }
-                
-                if (arm && surface) {
-                    grasp = new Box2D.Dynamics.Joints.b2FrictionJointDef();
-                    grasp.maxForce = 5;
-                    grasp.maxTorque = 0.25 * Math.PI;
-                    grasp.Initialize(arm.body, surface, arm.body.GetWorldPoint(localHandVector));
-                    arm.graspJoint = Crafty.box2D.world.CreateJoint(grasp);
+                    if (self.grasping) {
+                    bodyA = contact.GetFixtureA().GetBody();
+                    bodyB = contact.GetFixtureB().GetBody();
+                    if (self.arms.left.body === bodyA || self.arms.left.body === bodyB) {
+                        arm = self.arms.left;
+                        localHandVector = new Box2D.Common.Math.b2Vec2(
+                            2 / Crafty.box2D.PTM_RATIO,
+                            2.5 / Crafty.box2D.PTM_RATIO
+                        );
+                    } else if (self.arms.right.body === bodyA || self.arms.right.body === bodyB) {
+                        arm = self.arms.right;
+                        localHandVector = new Box2D.Common.Math.b2Vec2(
+                            13 / Crafty.box2D.PTM_RATIO,
+                            2.5 / Crafty.box2D.PTM_RATIO
+                        );
+                    }
+                    
+                    if (self.arms.left.body === bodyA || self.arms.right.body === bodyA) {
+                        surface = bodyB;
+                    } else if (self.arms.left.body === bodyB || self.arms.right.body === bodyB) {
+                        surface = bodyA;
+                    }
+                    
+                    if (arm && surface) {
+                        grasp = new Box2D.Dynamics.Joints.b2FrictionJointDef();
+                        grasp.maxForce = 8;
+                        grasp.maxTorque = 0.25 * Math.PI;
+                        grasp.Initialize(arm.body, surface, arm.body.GetWorldPoint(localHandVector));
+                        arm.graspJoint = Crafty.box2D.world.CreateJoint(grasp);
+                    }
                 }
             };
             listener.EndContact = function (contact) {
@@ -138,15 +140,19 @@ require([
                 } else if (self.arms.right.body === bodyA || self.arms.right.body === bodyB) {
                     arm = self.arms.right;
                 }
-                if (arm) {
+                if (arm && arm.graspJoint) {
                     arm.delay(function () {
-                        if (false) {
+                        var separation = arm.graspJoint.GetAnchorA().Copy();
+                        separation.Subtract(arm.graspJoint.GetAnchorB());
+                        if (separation.Length() > 0.15) {
                             Crafty.box2D.world.DestroyJoint(arm.graspJoint);
                         }
                     }, 100, -1);
                 }
             }
             Crafty.box2D.world.SetContactListener(listener);
+
+            this.setGrasping(true);
 
             this.bind('EnterFrame', this.render);
             return this;
@@ -155,5 +161,23 @@ require([
         render: function () {
             return this;
         },
+        
+        letGo: function () {
+            var self = this;
+            if (this.arms.left.graspJoint) {
+                Crafty.box2D.world.DestroyJoint(this.arms.left.graspJoint);
+            }
+            if (this.arms.right.graspJoint) {
+                Crafty.box2D.world.DestroyJoint(this.arms.right.graspJoint);
+            }
+            this.delay(function () {
+                self.setGrasping(true);
+            }, 1000)
+            this.setGrasping(false);
+        },
+        
+        setGrasping: function (doGrasp) {
+            this.grasping = doGrasp;
+        }
     });
 });

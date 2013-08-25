@@ -49,7 +49,9 @@ require([
                 astronaut.eva.jets[3].throttle = 0;
                 astronaut.eva.jets[4].throttle = 0;
                 astronaut.eva.jets[5].throttle = 0;
-
+            }
+            if (astronaut.isDown(Crafty.keys.X)) {
+                astronaut.letGo();
             }
         });
         
