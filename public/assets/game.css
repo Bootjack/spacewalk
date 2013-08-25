@@ -1,0 +1,54 @@
+#cr-stage {
+    background: hsl(0, 0, 10);
+    border: 1px solid black;
+    float: left;
+    margin: 0.5em auto;
+}
+
+#spine-out {
+    background: white;
+    border: 1px solid lightgray;
+    color: gray;
+    float: left;
+    font: 0.8em/1em monospace;
+    min-height: 2em;
+    margin: 0 auto;
+    max-height: 15em;
+    overflow: auto;
+    padding: 1em 25px;
+    width: 750px;
+}
+
+body {
+    background: white 0 0 no-repeat;
+    background-image: -webkit-linear-gradient(top, whitesmoke 20%, white 90%);
+    background-image: -moz-linear-gradient(top, whitesmoke 20%, white 90%);
+    background-image: linear-gradient(top, whitesmoke 20%, white 90%);
+    font: 1em/1.2em 'Helvetica', 'Arial', sans-serif;
+    margin: 0;
+    min-height: 100%;
+    min-width: 100%;
+    padding: 0;
+    position: relative;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
+h1 {
+    line-height: 1.5em;
+    margin: 1em auto 0 auto;
+    width: 800px;
+}
+
+.scene-link {
+    background-color: #777777;
+    border-left: 4px solid white;
+    color: white;
+    display: block;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    padding: 0.25em;
+    text-decoration: none;    
+}
+.scene-link:hover {
+    background: orange;
+    color: white;
+}
