@@ -22,7 +22,6 @@ require([
             x: 50,
             y: 300
         }).astronaut();
-        astronaut.body.SetAngle(-0.12 * Math.PI);
 
         astronaut.bind('EnterFrame', function () {
             var self;
@@ -56,9 +55,11 @@ require([
         });
 
         grappleGun = Crafty.e('Grapple_Gun').attr({
-            x: astronaut._x + astronaut._w + astronaut.arms.right._w - 5,
-            y: astronaut._y + 2
+            x: astronaut.arms.right._x + astronaut.arms.right._w + 10,
+            y: astronaut.arms.right._y
         }).grappleGun();
+        grappleGun.body.SetAngle(0.5 * Math.PI);
+        grappleGun.affix(astronaut.arms.right);
   
         astronaut.bind('KeyDown', function () {
             if (astronaut.isDown(Crafty.keys.SPACE)) {
@@ -71,7 +72,7 @@ require([
                  astronaut.setGrasping(!astronaut.grasping);
             }
         });
-                
+        
         Crafty.e('Walls');
     });
 });

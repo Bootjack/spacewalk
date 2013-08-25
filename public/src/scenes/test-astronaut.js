@@ -61,7 +61,7 @@ require([
             }
         });
                 
-        Crafty.e('Debris').attr({x: 200, y: 125}).debris();
+        Crafty.e('Debris').attr({w: 380, h: 256, x: 200, y: 125}).debris();
         Crafty.e('Walls');
     });
 });

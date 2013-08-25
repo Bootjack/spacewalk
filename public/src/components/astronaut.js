@@ -5,6 +5,52 @@ require([
 ], function () {
     'use strict';
     
+    Crafty.b2AddContactListener = function (name, listener) {
+        var i, masterListener = new Box2D.Dynamics.b2ContactListener();
+        
+        Crafty._b2ContactListeners = Crafty._b2ContactListeners || {};
+        Crafty._b2ContactListeners[name] = listener;
+
+        masterListener.BeginContact = function (contact) {
+            for (i in Crafty._b2ContactListeners) {
+                if (Crafty._b2ContactListeners.hasOwnProperty(i) 
+                    && 'undefined' !== typeof Crafty._b2ContactListeners[i]
+                    && 'function' === typeof Crafty._b2ContactListeners[i].BeginContact) {
+                    Crafty._b2ContactListeners[i].BeginContact(contact);
+                }
+            }
+        }
+        masterListener.EndContact = function (contact) {
+            for (i in Crafty._b2ContactListeners) {
+                if (Crafty._b2ContactListeners.hasOwnProperty(i) 
+                    && 'undefined' !== typeof Crafty._b2ContactListeners[i]
+                    && 'function' === typeof Crafty._b2ContactListeners[i].EndContact) { 
+                    Crafty._b2ContactListeners[i].EndContact(contact);
+                }
+            }
+        }
+        masterListener.PreSolve = function (contact, oldManifold) {
+            for (i in Crafty._b2ContactListeners) {
+                if (Crafty._b2ContactListeners.hasOwnProperty(i) 
+                    && 'undefined' !== typeof Crafty._b2ContactListeners[i]
+                    && 'function' === typeof Crafty._b2ContactListeners[i].PreSolve) {
+                    Crafty._b2ContactListeners[i].PreSolve(contact, oldManifold);
+                }
+            }
+        }
+        masterListener.PostSolve = function (contact, impulse) {
+            for (i in Crafty._b2ContactListeners) {
+                if (Crafty._b2ContactListeners.hasOwnProperty(i) 
+                    && 'undefined' !== typeof Crafty._b2ContactListeners[i]
+                    && 'function' === typeof Crafty._b2ContactListeners[i]) {
+                    Crafty._b2ContactListeners[i].PostSolve(contact, impulse);
+                }
+            }
+        }
+
+        Crafty.box2D.world.SetContactListener(masterListener);
+    }
+    
     Crafty.c('Astronaut', {
         init: function () {
             this.requires('2D, Canvas, Color, Mouse, Keyboard, Delay')
@@ -70,7 +116,7 @@ require([
             leftArmJointDef.collideConnected = false;
             leftArmJointDef.enableLimit = true;
             leftArmJointDef.lowerAngle = -0.4 * Math.PI;
-            leftArmJointDef.upperAngle = 0.5 * Math.PI;
+            leftArmJointDef.upperAngle = 0.4 * Math.PI;
             leftArmJointDef.enableMotor = true;
             leftArmJointDef.motorSpeed = 0;
        		leftArmJointDef.maxMotorTorque = 0.15;
@@ -86,7 +132,7 @@ require([
             rightArmJointDef = new Box2D.Dynamics.Joints.b2RevoluteJointDef();
             rightArmJointDef.collideConnected = false;
             rightArmJointDef.enableLimit = true;
-            rightArmJointDef.lowerAngle = -0.3 * Math.PI;
+            rightArmJointDef.lowerAngle = -0.4 * Math.PI;
             rightArmJointDef.upperAngle = 0.4 * Math.PI;
             rightArmJointDef.enableMotor = true;
             rightArmJointDef.motorSpeed = 0;
@@ -154,7 +200,7 @@ require([
                     }, 100, -1);
                 }
             }
-            Crafty.box2D.world.SetContactListener(listener);
+            Crafty.b2AddContactListener('astronaut.grasp', listener);
 
             this.setGrasping(true);
 

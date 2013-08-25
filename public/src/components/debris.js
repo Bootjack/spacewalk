@@ -6,7 +6,6 @@ require([], function () {
     Crafty.c('Debris', {
         init: function () {
             this.requires('2D, Box2D, Canvas, Color')
-                .attr({w: 380, h: 256})
                 .color('rgba(85, 85, 95, 1.0)');
             return this;   
         },        
@@ -17,7 +16,7 @@ require([], function () {
                 friction: 0.8,
                 restitution: 0.8
             });
-            this.body.ApplyTorque((0.5 + Math.random()) * 500000);
+            this.body.ApplyTorque((0.5 + Math.random()) * 10 * this._w * this._h);
             return this;
         }
     })
