@@ -53,6 +53,15 @@ require([
 
             }
         });
+
+        astronaut.bind('KeyDown', function () {
+            if (astronaut.isDown(Crafty.keys.X)) {
+                astronaut.letGo();
+            }
+            if (astronaut.isDown(Crafty.keys.Z)) {
+                 astronaut.setGrasping(!astronaut.grasping);
+            }
+        });
         
         for (i = 0; i < 14; i += 1) {
             Crafty.e('Satellite').attr({x: Math.random() * 700, y: Math.random() * 500}).satellite();        

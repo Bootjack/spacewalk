@@ -99,7 +99,7 @@ require([
             var listener = new Box2D.Dynamics.b2ContactListener()
             listener.BeginContact = function (contact) {
                 var arm, bodyA, bodyB, grasp, localHandVector, surface;
-                    if (self.grasping) {
+                if (self.grasping) {
                     bodyA = contact.GetFixtureA().GetBody();
                     bodyB = contact.GetFixtureB().GetBody();
                     if (self.arms.left.body === bodyA || self.arms.left.body === bodyB) {
@@ -125,13 +125,13 @@ require([
                     if (arm && surface) {
                         grasp = new Box2D.Dynamics.Joints.b2FrictionJointDef();
                         grasp.maxForce = 8;
-                        grasp.maxTorque = 0.25 * Math.PI;
+                        grasp.maxTorque = 0.05 * Math.PI;
                         grasp.Initialize(arm.body, surface, arm.body.GetWorldPoint(localHandVector));
                         arm.graspJoint = Crafty.box2D.world.CreateJoint(grasp);
                     }
                 }
             };
-            listener.EndContact = function (contact) {
+            listener.PreSolve = function (contact) {
                 var arm, bodyA, bodyB;
                 bodyA = contact.GetFixtureA().GetBody();
                 bodyB = contact.GetFixtureB().GetBody();
@@ -172,7 +172,7 @@ require([
             }
             this.delay(function () {
                 self.setGrasping(true);
-            }, 1000)
+            }, 500)
             this.setGrasping(false);
         },
         

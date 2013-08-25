@@ -50,11 +50,17 @@ require([
                 astronaut.eva.jets[4].throttle = 0;
                 astronaut.eva.jets[5].throttle = 0;
             }
+        });
+        
+        astronaut.bind('KeyDown', function () {
             if (astronaut.isDown(Crafty.keys.X)) {
                 astronaut.letGo();
             }
+            if (astronaut.isDown(Crafty.keys.Z)) {
+                 astronaut.setGrasping(!astronaut.grasping);
+            }
         });
-        
+                
         Crafty.e('Debris').attr({x: 200, y: 125}).debris();
         Crafty.e('Walls');
     });

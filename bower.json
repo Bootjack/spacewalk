@@ -13,6 +13,7 @@
   "dependencies": {
     "requirejs": "~2.1.8",
     "crafty": "0.6.0-alpha",
-    "modernizr": "~2.6.2"
+    "modernizr": "~2.6.2",
+    "box2Dweb": "https://github.com/aaronfarr/box2Dweb.git"
   }
 }
