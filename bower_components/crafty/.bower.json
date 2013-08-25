@@ -1,0 +1,18 @@
+{
+  "name": "crafty",
+  "main": "crafty.js",
+  "version": "0.6.0-alpha",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/craftyjs/Crafty.git"
+  },
+  "homepage": "https://github.com/craftyjs/Crafty",
+  "_release": "0.6.0-alpha",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.6.0-alpha",
+    "commit": "a2a1828e821af41d4831c58d8dbcaba3e3ff5a3a"
+  },
+  "_source": "git://github.com/craftyjs/Crafty.git",
+  "_target": "0.6.0-alpha"
+}
