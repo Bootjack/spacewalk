@@ -47,7 +47,7 @@ require([
             
             this.arms = {
                 left: Crafty.e('2D, Box2D, Canvas, Color, Delay')
-                    .attr({x: this._x - 13, y: this._y + 8, w: 14, h: 5})
+                    .attr({x: this._x - 11, y: this._y + 10, w: 12, h: 5})
                     .color('rgba(240, 240, 240, 1.0)')
                     .box2d({
                         bodyType: 'dynamic',
@@ -56,7 +56,7 @@ require([
                         groupIndex: -1
                     }),
                 right: Crafty.e('2D, Box2D, Canvas, Color, Delay')
-                    .attr({x: this._x + this._w - 1, y: this._y + 8, w: 14, h: 5})
+                    .attr({x: this._x + this._w - 1, y: this._y + 10, w: 12, h: 5})
                     .color('rgba(240, 240, 240, 1.0)')
                     .box2d({
                         bodyType: 'dynamic',
@@ -69,8 +69,8 @@ require([
             leftArmJointDef = new Box2D.Dynamics.Joints.b2RevoluteJointDef();
             leftArmJointDef.collideConnected = false;
             leftArmJointDef.enableLimit = true;
-            leftArmJointDef.lowerAngle = -0.3 * Math.PI;
-            leftArmJointDef.upperAngle = 0.4 * Math.PI;
+            leftArmJointDef.lowerAngle = -0.4 * Math.PI;
+            leftArmJointDef.upperAngle = 0.5 * Math.PI;
             leftArmJointDef.enableMotor = true;
             leftArmJointDef.motorSpeed = 0;
        		leftArmJointDef.maxMotorTorque = 0.15;
@@ -78,7 +78,7 @@ require([
                 this.body,
                 this.arms.left.body,
                 this.arms.left.body.GetWorldPoint(
-                    new Box2D.Common.Math.b2Vec2(13 / Crafty.box2D.PTM_RATIO, 2.5 / Crafty.box2D.PTM_RATIO)
+                    new Box2D.Common.Math.b2Vec2(11 / Crafty.box2D.PTM_RATIO, 2.5 / Crafty.box2D.PTM_RATIO)
                 )
             );
             leftArmJoint = Crafty.box2D.world.CreateJoint(leftArmJointDef);

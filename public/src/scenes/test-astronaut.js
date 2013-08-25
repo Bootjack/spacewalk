@@ -37,11 +37,11 @@ require([
             } else if (astronaut.isDown(Crafty.keys.D)) {
                 astronaut.eva.jets[4].throttle = 1;
             } else  if (astronaut.isDown(Crafty.keys.Q)) {
-                astronaut.eva.jets[0].throttle = 0.5;
-                astronaut.eva.jets[3].throttle = 0.5;
+                astronaut.eva.jets[0].throttle = 1;
+                astronaut.eva.jets[3].throttle = 1;
             } else if (astronaut.isDown(Crafty.keys.E)) {
-                astronaut.eva.jets[1].throttle = 0.5;
-                astronaut.eva.jets[2].throttle = 0.5;
+                astronaut.eva.jets[1].throttle = 1;
+                astronaut.eva.jets[2].throttle = 1;
             } else {
                 astronaut.eva.jets[0].throttle = 0;
                 astronaut.eva.jets[1].throttle = 0;
