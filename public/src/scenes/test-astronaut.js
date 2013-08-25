@@ -2,6 +2,7 @@ var Crafty, require;
 
 require([
     'src/components/astronaut',
+    'src/components/debris',
     'src/components/walls'
 ], function () {
     'use strict';
@@ -16,7 +17,7 @@ require([
         Crafty.background('rgb(15, 10, 20)');
 
         astronaut = Crafty.e('Astronaut').attr({
-            x: 300,
+            x: 50,
             y: 300
         }).astronaut();
         astronaut.body.SetAngle(-0.12 * Math.PI);
@@ -52,6 +53,7 @@ require([
             }
         });
         
+        Crafty.e('Debris').attr({x: 200, y: 125}).debris();
         Crafty.e('Walls');
     });
 });

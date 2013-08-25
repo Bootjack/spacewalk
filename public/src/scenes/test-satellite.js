@@ -13,7 +13,8 @@ require([
         Crafty.viewport.init(800, 600, 'cr-stage');
         Crafty.viewport.clampToEntities = false;
         Crafty.viewport.mouselook(true);
-               
+        Crafty.box2D.showDebugInfo();
+                           
         Crafty.background('rgb(15, 10, 20)');
 
         astronaut = Crafty.e('Astronaut').attr({
