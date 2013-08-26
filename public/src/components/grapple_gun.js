@@ -1,6 +1,6 @@
 var Crafty, require;
 
-require([], function () {
+require(['src/modules/storage'], function () {
     'use strict';
     
     Crafty.c('Grapple_Gun', {
@@ -8,15 +8,26 @@ require([], function () {
             this.requires('2D, Canvas, Color')
                 .attr({w: 5, h: 12})
             this.locked = false;
+            this.ammo = Crafty.e('Storage').storage({
+                material: 'hooks',
+                capacity: 1,
+                quantity: 1
+            });
             return this;   
         },
         
-        grappleGun: function () {
+        grappleGun: function (config) {
+            config = config || {};
             this.ropeLength = 0;
             this.maxRopeLength = 25;       // 15m
             this.segmentInterval = 0.1;    // 5cm
             this.colorString = 'rgba(255, 155, 0, 1.0)';
             this.color(this.colorString);
+            
+            if (config.ammo) {
+                this.ammo.quantity = config.ammo;
+                this.ammo.capacity = config.ammo;
+            }
             
             this.requires('Box2D').box2d({
                 bodyType: 'dynamic',
@@ -33,47 +44,49 @@ require([], function () {
         reload: function () {
             var latchJointDef;
             
-            this.unbind('EnterFrame', this.payOut);            
-            this.ropeLength = 0;
-            this.locked = false;
-            this.rope = [];
-            
-            this.head = Crafty.e('2D, Box2D, Canvas, Color, Delay')
-                .attr({x: this._x, y: this._y, w: 4, h: 8})
-                .color(this.colorString)
-                .box2d({
-                    bodyType: 'dynamic',
-                    density: 7.8 * 0.02,    // 2cm thick solid steel
-                    friction: 5.0,          // (it pierces, of course)
-                    restitution: 0.9,
-                    groupIndex: -2
-                });
-            this.head.body.SetPositionAndAngle(
-                this.body.GetWorldPoint(new Box2D.Common.Math.b2Vec2(
-                    1 / Crafty.box2D.PTM_RATIO,
-                    -6 / Crafty.box2D.PTM_RATIO
-                )),
-                this.body.GetAngle()
-            );
-            
-            latchJointDef = new Box2D.Dynamics.Joints.b2PrismaticJointDef;
-            latchJointDef.enableLimit = true;
-            latchJointDef.lowerTranslation = -0.05;
-            latchJointDef.upperTranslation = 0.05;
-            latchJointDef.Initialize(
-                this.body,
-                this.head.body,
-                this.body.GetWorldPoint(
-                    new Box2D.Common.Math.b2Vec2(
-                        0.5 * this._w / Crafty.box2D.PTM_RATIO,
-                        0.75 * this._h / Crafty.box2D.PTM_RATIO
+            if (this.ammo.remove(1)) {
+                this.unbind('EnterFrame', this.payOut);            
+                this.ropeLength = 0;
+                this.locked = false;
+                this.rope = [];
+                
+                this.head = Crafty.e('2D, Box2D, Canvas, Color, Delay')
+                    .attr({x: this._x, y: this._y, w: 4, h: 8})
+                    .color(this.colorString)
+                    .box2d({
+                        bodyType: 'dynamic',
+                        density: 7.8 * 0.02,    // 2cm thick solid steel
+                        friction: 5.0,          // (it pierces, of course)
+                        restitution: 0.9,
+                        groupIndex: -2
+                    });
+                this.head.body.SetPositionAndAngle(
+                    this.body.GetWorldPoint(new Box2D.Common.Math.b2Vec2(
+                        1 / Crafty.box2D.PTM_RATIO,
+                        -6 / Crafty.box2D.PTM_RATIO
+                    )),
+                    this.body.GetAngle()
+                );
+                
+                latchJointDef = new Box2D.Dynamics.Joints.b2PrismaticJointDef;
+                latchJointDef.enableLimit = true;
+                latchJointDef.lowerTranslation = -0.05;
+                latchJointDef.upperTranslation = 0.05;
+                latchJointDef.Initialize(
+                    this.body,
+                    this.head.body,
+                    this.body.GetWorldPoint(
+                        new Box2D.Common.Math.b2Vec2(
+                            0.5 * this._w / Crafty.box2D.PTM_RATIO,
+                            0.75 * this._h / Crafty.box2D.PTM_RATIO
+                        )
+                    ),
+                    this.head.body.GetWorldVector(
+                        new Box2D.Common.Math.b2Vec2(0, -1)
                     )
-                ),
-                this.head.body.GetWorldVector(
-                    new Box2D.Common.Math.b2Vec2(0, -1)
-                )
-            );
-            this.latch = Crafty.box2D.world.CreateJoint(latchJointDef);
+                );
+                this.latch = Crafty.box2D.world.CreateJoint(latchJointDef);
+            }
             return this;
         },
 
@@ -184,7 +197,7 @@ require([], function () {
                         segment.body.GetWorldCenter()
                     );
                     segment.joint = Crafty.box2D.world.CreateJoint(jointDef);
-                    
+
                     this.ropeLength += distance + 2 * segment._h / Crafty.box2D.PTM_RATIO;
 
                     this.rope.push(segment);

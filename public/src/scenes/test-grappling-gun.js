@@ -57,7 +57,7 @@ require([
         grappleGun = Crafty.e('Grapple_Gun').attr({
             x: astronaut.arms.right._x + astronaut.arms.right._w + 10,
             y: astronaut.arms.right._y
-        }).grappleGun();
+        }).grappleGun({ammo: 3});
         grappleGun.body.SetAngle(0.5 * Math.PI);
         grappleGun.affix(astronaut.arms.right);
   
