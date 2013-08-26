@@ -2,6 +2,7 @@ var Crafty, require;
 
 require([
     'src/components/astronaut',
+    'src/components/grapple_gun',
     'src/components/debris',
     'src/components/walls',
     'src/components/objective'
@@ -9,7 +10,7 @@ require([
     'use strict';
 
     Crafty.scene('test-objective', function () {
-        var astronaut, walls;
+        var astronaut, grappleGun, debris, objective, walls;
 
         Crafty.viewport.init(800, 600, 'cr-stage');
         Crafty.viewport.clampToEntities = false;
@@ -52,8 +53,24 @@ require([
                 astronaut.eva.jets[5].throttle = 0;
             }
         });
-        
-        astronaut.bind('KeyDown', function () {
+          
+        grappleGun = Crafty.e('Grapple_Gun').attr({
+            x: astronaut.arms.right._x + astronaut.arms.right._w + 10,
+            y: astronaut.arms.right._y
+        }).grappleGun({ammo: 3});
+        grappleGun.body.SetAngle(0.5 * Math.PI);
+        grappleGun.affix(astronaut.arms.right);
+  
+        astronaut.bind('KeyDown', function (e) {
+            if (astronaut.isDown(Crafty.keys.SPACE)) {
+                grappleGun.fire();
+            }
+            if (astronaut.isDown(Crafty.keys.C)) {
+                grappleGun.sever();
+            }
+            if (astronaut.isDown(Crafty.keys.R)) {
+                grappleGun.reload();
+            }
             if (astronaut.isDown(Crafty.keys.X)) {
                 astronaut.letGo();
             }
@@ -61,15 +78,22 @@ require([
                  astronaut.setGrasping(!astronaut.grasping);
             }
         });
-          
         
-        Crafty.e('Objective').attr({
-            w: 20, 
-            h: 20, 
-            x: 580, 
-            y: 240, 
+        objective = Crafty.e('Objective').attr({
+            w: 100, 
+            h: 10, 
+            x: 350,
+            y: 250,
             color: 'rgb(200,100,250)'
         }).objective();
+        debris = Crafty.e('Debris');
+        
+        // need to attach Collision entity after setting attributes of Box2D entity
+        // but before calling constructor, it seems
+        debris.attr({w: 200, h: 150, x: 300, y: 300 })
+        .attach(objective)
+        .debris();
+         
         Crafty.e('Walls');
     });
 });
