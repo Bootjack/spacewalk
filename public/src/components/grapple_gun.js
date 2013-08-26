@@ -186,7 +186,7 @@ require(['src/modules/storage'], function () {
                     segBodyDef.linearDamping = 0.25;   
                     segBodyDef.position.Set(muzzleEndPosition.x, muzzleEndPosition.y);
                     segment.requires('Box2D');
-                    segment.box2d({bodyDef: segBodyDef, density: 0.03, restitution: 0.1, groupIndex: -2});
+                    segment.box2d({bodyDef: segBodyDef, density: 0.03, restitution: 0.1, groupIndex: -2, maskBits: parseInt('1101', 2)});
                     
                     segmentEndPosition = segment.body.GetWorldPoint(new Box2D.Common.Math.b2Vec2(
                         0.5 * segment._w / Crafty.box2D.PTM_RATIO,
@@ -222,7 +222,7 @@ require(['src/modules/storage'], function () {
             if (!this.locked && this.rope.length) {
                 this.locked = true;
                 ropeEnd = this.rope[this.rope.length - 1];
-            
+
                 jointDef = new Box2D.Dynamics.Joints.b2WeldJointDef;
                 jointDef.Initialize(
                     ropeEnd.body,
