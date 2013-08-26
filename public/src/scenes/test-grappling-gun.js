@@ -14,7 +14,7 @@ require([
         Crafty.viewport.clampToEntities = false;
         Crafty.viewport.mouselook(true);
 
-        //Crafty.box2D.showDebugInfo();
+        Crafty.box2D.showDebugInfo();
         
         Crafty.background('rgb(15, 10, 20)');
 
@@ -61,9 +61,15 @@ require([
         grappleGun.body.SetAngle(0.5 * Math.PI);
         grappleGun.affix(astronaut.arms.right);
   
-        astronaut.bind('KeyDown', function () {
+        astronaut.bind('KeyDown', function (e) {
             if (astronaut.isDown(Crafty.keys.SPACE)) {
                 grappleGun.fire();
+            }
+            if (astronaut.isDown(Crafty.keys.C)) {
+                grappleGun.sever();
+            }
+            if (astronaut.isDown(Crafty.keys.R)) {
+                grappleGun.reload();
             }
             if (astronaut.isDown(Crafty.keys.X)) {
                 astronaut.letGo();

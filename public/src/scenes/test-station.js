@@ -70,19 +70,23 @@ require([
             }
         });
         
-        var i, height, depth, spin, deb, radius, position, rotation, units;
-        radius = 300;
+        var i, hub, depth, spin, deb, radius, rotation, units, jointDef;
+        radius = 600;
         units = 50;
         depth = 2;
-        position = {x: 300, y: 300};
+        
+        hub = Crafty.e('2D, Box2D')
+            .attr({x: 300, y: 300, w: 1, h: 1})
+            .box2d({bodyType: 'dynamic'});
+
         for (i = 0; i < units; i += 1) {
             if (0 !== i % (units / 5) && 0 !== (i - 1) % (units / 5)) {
                 rotation = 2 * Math.PI * i / units;
                 deb = Crafty.e('Debris').attr({
                     w: depth * 2 * Math.PI * radius / units,
                     h: 2 * Math.PI * radius / units,
-                    x: position.x + radius * Math.cos(rotation),
-                    y: position.y + radius * Math.sin(rotation)
+                    x: hub._x + radius * Math.cos(rotation),
+                    y: hub._y + radius * Math.sin(rotation)
                 }).debris();
                 deb.body.SetAngle(2 * Math.PI * (i + 0.5) / units);
             }

@@ -7,13 +7,11 @@ require([], function () {
         init: function () {
             this.requires('2D, Canvas, Color')
                 .attr({w: 5, h: 12})
-            this.rope = [];
             this.locked = false;
             return this;   
         },
         
         grappleGun: function () {
-            var ropeJointDef;
             this.ropeLength = 0;
             this.maxRopeLength = 25;       // 15m
             this.segmentInterval = 0.1;    // 5cm
@@ -26,10 +24,22 @@ require([], function () {
                 friction: 3.0,          // (it has a rubberized grip, of course)
                 restitution: 0.9,
                 groupIndex: -2
-            })
+            })    
+            
+            this.reload();
+            return this;
+        },
 
+        reload: function () {
+            var latchJointDef;
+            
+            this.unbind('EnterFrame', this.payOut);            
+            this.ropeLength = 0;
+            this.locked = false;
+            this.rope = [];
+            
             this.head = Crafty.e('2D, Box2D, Canvas, Color, Delay')
-                .attr({x: this._x +1, y: this._y - 6, w: 4, h: 8})
+                .attr({x: this._x, y: this._y, w: 4, h: 8})
                 .color(this.colorString)
                 .box2d({
                     bodyType: 'dynamic',
@@ -37,14 +47,15 @@ require([], function () {
                     friction: 5.0,          // (it pierces, of course)
                     restitution: 0.9,
                     groupIndex: -2
-                });      
+                });
+            this.head.body.SetPositionAndAngle(
+                this.body.GetWorldPoint(new Box2D.Common.Math.b2Vec2(
+                    1 / Crafty.box2D.PTM_RATIO,
+                    -6 / Crafty.box2D.PTM_RATIO
+                )),
+                this.body.GetAngle()
+            );
             
-            this.relatch();
-            return this;
-        },
-
-        relatch: function () {
-            var latchJointDef;
             latchJointDef = new Box2D.Dynamics.Joints.b2PrismaticJointDef;
             latchJointDef.enableLimit = true;
             latchJointDef.lowerTranslation = -0.05;
@@ -67,8 +78,9 @@ require([], function () {
         },
 
         fire: function () {
-            var self, listener, magnitude;
+            var head, self, listener, magnitude;
             self = this;
+            head = this.head;
             magnitude = 8;
             if (this.latch) {
                 Crafty.box2D.world.DestroyJoint(this.latch);
@@ -81,36 +93,39 @@ require([], function () {
                     this.body.GetWorldCenter()
                 );
 
-                this.bind('EnterFrame', self.payOut);
+                this.bind('EnterFrame', this.payOut);
 
                 listener = new Box2D.Dynamics.b2ContactListener();
                 listener.BeginContact = function (contact) {
                     var bodyA, bodyB, grasp, surface;
-                        bodyA = contact.GetFixtureA().GetBody();
-                        bodyB = contact.GetFixtureB().GetBody();
-                        
-                        if (self.head.body === bodyA) {
-                            surface = bodyB;
-                        } else if (self.head.body === bodyB) {
-                            surface = bodyA;
+                    bodyA = contact.GetFixtureA().GetBody();
+                    bodyB = contact.GetFixtureB().GetBody();
+                    
+                    if (head.body === bodyA) {
+                        surface = bodyB;
+                    } else if (head.body === bodyB) {
+                        surface = bodyA;
+                    }
+                    
+                    if (surface) {
+                        grasp = new Box2D.Dynamics.Joints.b2RevoluteJointDef();
+                        grasp.enableMotor = true;
+                        grasp.motorSpeed = 0;
+                        grasp.maxMotorTorque = 0.25 * Math.PI;
+                        grasp.Initialize(
+                            head.body,
+                            surface,
+                            head.body.GetWorldPoint(new Box2D.Common.Math.b2Vec2(
+                                head._w  * 0.5 / Crafty.box2D.PTM_RATIO,
+                                0
+                            ))
+                        );
+                        head.graspJoint = Crafty.box2D.world.CreateJoint(grasp);
+                        Crafty.b2RemoveContactListener('harpoon.stick');
+                        if (self) {
+                           self.lock();                            
                         }
-                        
-                        if (surface) {
-                            grasp = new Box2D.Dynamics.Joints.b2RevoluteJointDef();
-                            grasp.enableMotor = true;
-                            grasp.motorSpeed = 0;
-                            grasp.maxMotorTorque = 0.25 * Math.PI;
-                            grasp.Initialize(
-                                self.head.body,
-                                surface,
-                                self.head.body.GetWorldPoint(new Box2D.Common.Math.b2Vec2(
-                                    self.head._w  * 0.5 / Crafty.box2D.PTM_RATIO,
-                                    0
-                                ))
-                            );
-                            self.head.graspJoint = Crafty.box2D.world.CreateJoint(grasp);
-                            self.lock();
-                        }
+                    }
                 };
                 Crafty.b2AddContactListener('harpoon.stick', listener); 
             }
@@ -118,7 +133,7 @@ require([], function () {
         },
 
         payOut: function () {
-            var distance, segment, segmentEndPosition, jointDef, parentSegment, parentEndPosition, muzzleEndPosition;
+            var distance, segment, segBodyDef, segmentEndPosition, jointDef, parentSegment, parentEndPosition, muzzleEndPosition;
             
             if (this.rope.length) {
                 parentSegment = this.rope[this.rope.length - 1];
@@ -142,10 +157,16 @@ require([], function () {
             
             if (!this.locked && distance >= this.segmentInterval) {
                 if (this.ropeLength < this.maxRopeLength) {
-                    segment = Crafty.e('2D, Box2D, Canvas, Color')
+                   segment = Crafty.e('2D, Canvas, Color')
                         .attr({x: this._x + this._w / 2, y: this._y, h: 2, w: 2})
-                        .color(this.colorString)
-                        .box2d({bodyType: 'dynamic', density: 0.03, restitution: 0.1, groupIndex: -2});
+                        .color(this.colorString);
+                        
+                    segBodyDef = new Box2D.Dynamics.b2BodyDef();
+                    segBodyDef.type = Box2D.Dynamics.b2Body.b2_dynamicBody;
+                    segBodyDef.linearDamping = 0.5;   
+                    segBodyDef.position.Set(segment._x / Crafty.box2D.PTM_RATIO, segment._y / Crafty.box2D.PTM_RATIO);
+                    segment.requires('Box2D');
+                    segment.box2d({bodyDef: segBodyDef, density: 0.03, restitution: 0.1, groupIndex: -2});
                     
                     segmentEndPosition = segment.body.GetWorldPoint(new Box2D.Common.Math.b2Vec2(
                         0.5 * segment._w / Crafty.box2D.PTM_RATIO,
@@ -177,11 +198,12 @@ require([], function () {
 
         lock: function () {
             var ropeEnd, jointDef, endPosition, distance, headPosition, totalDistance;
-            this.locked = true;
-            if (this.rope.length) {
+
+            if (!this.locked && this.rope.length) {
+                this.locked = true;
                 ropeEnd = this.rope[this.rope.length - 1];
             
-                jointDef = new Box2D.Dynamics.Joints.b2DistanceJointDef;
+                jointDef = new Box2D.Dynamics.Joints.b2WeldJointDef;
                 jointDef.Initialize(
                     ropeEnd.body,
                     this.body,
@@ -194,18 +216,26 @@ require([], function () {
                 jointDef.maxLength = this.ropeLength;
                 jointDef.Initialize(
                     this.head.body,
-                    this.body,
+                    ropeEnd.body,
                     this.head.body.GetWorldCenter(new Box2D.Common.Math.b2Vec2(
                         0.5 * this.head._w / Crafty.box2D.PTM_RATIO,
                         this.head._h / Crafty.box2D.PTM_RATIO
                     )),
-                    this.body.GetWorldPoint(new Box2D.Common.Math.b2Vec2(
+                    ropeEnd.body.GetWorldPoint(new Box2D.Common.Math.b2Vec2(
                         0.5 * this._w / Crafty.box2D.PTM_RATIO,
                         0
                     ))
                 );
                 this.ropeLimiter = Crafty.box2D.world.CreateJoint(jointDef);
             }
+            return this;
+        },
+        
+        sever: function () {
+            if (!this.locked) {
+                this.lock();
+            }
+            Crafty.box2D.world.DestroyJoint(this.terminus);
             return this;
         },
 
