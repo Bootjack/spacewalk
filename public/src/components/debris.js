@@ -15,7 +15,8 @@ require([], function () {
                 bodyType: 'dynamic',
                 density: 7.8 * 1.0,
                 friction: 0.8,
-                restitution: 0.8
+                restitution: 0.8,
+                categoryBits: 2
             });
             if (config.randomSpin) {
                 this.spin((Math.random() - 0.5) * 5);

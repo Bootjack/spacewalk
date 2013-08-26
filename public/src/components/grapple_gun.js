@@ -172,15 +172,21 @@ require(['src/modules/storage'], function () {
             if (!this.locked && distance >= this.segmentInterval) {
                 if (this.ropeLength < this.maxRopeLength) {
                    segment = Crafty.e('2D, Canvas, Color')
-                        .attr({x: this._x + this._w / 2, y: this._y, h: 3, w: 3})
+                        .attr({x: this._x, y: this._y, h: 3, w: 3})
                         .color(this.colorString);
-                        
+                    muzzleEndPosition = this.body.GetWorldPoint(
+                        new Box2D.Common.Math.b2Vec2(
+                            0.5 * this._w / Crafty.box2D.PTM_RATIO,
+                            0
+                        )
+                    );
+                    
                     segBodyDef = new Box2D.Dynamics.b2BodyDef();
                     segBodyDef.type = Box2D.Dynamics.b2Body.b2_dynamicBody;
                     segBodyDef.linearDamping = 0.25;   
-                    segBodyDef.position.Set(segment._x / Crafty.box2D.PTM_RATIO, segment._y / Crafty.box2D.PTM_RATIO);
+                    segBodyDef.position.Set(muzzleEndPosition.x, muzzleEndPosition.y);
                     segment.requires('Box2D');
-                    segment.box2d({bodyDef: segBodyDef, density: 0.03, restitution: 0.1, groupIndex: -2});
+                    segment.box2d({bodyDef: segBodyDef, density: 0.03, restitution: 0.1, groupIndex: -2, maskBits: parseInt('1101', 2)});
                     
                     segmentEndPosition = segment.body.GetWorldPoint(new Box2D.Common.Math.b2Vec2(
                         0.5 * segment._w / Crafty.box2D.PTM_RATIO,
@@ -216,13 +222,16 @@ require(['src/modules/storage'], function () {
             if (!this.locked && this.rope.length) {
                 this.locked = true;
                 ropeEnd = this.rope[this.rope.length - 1];
-            
+
                 jointDef = new Box2D.Dynamics.Joints.b2WeldJointDef;
                 jointDef.Initialize(
                     ropeEnd.body,
                     this.body,
                     ropeEnd.body.GetWorldCenter(),
-                    this.body.GetWorldCenter()
+                    this.body.GetWorldPoint(new Box2D.Common.Math.b2Vec2(
+                        0.5 * this._w / Crafty.box2D.PTM_RATIO,
+                        this._h / Crafty.box2D.PTM_RATIO
+                    ))
                 );
                 this.terminus = Crafty.box2D.world.CreateJoint(jointDef);
                 
