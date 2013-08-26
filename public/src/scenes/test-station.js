@@ -70,18 +70,22 @@ require([
             }
         });
         
-        var i, spin, deb, radius, rotation, units;
+        var i, height, depth, spin, deb, radius, position, rotation, units;
         radius = 300;
-        units = 20
+        units = 50;
+        depth = 2;
+        position = {x: 300, y: 300};
         for (i = 0; i < units; i += 1) {
-            rotation = 2 * Math.PI * (i + 0.5) / units;
-            deb = Crafty.e('Debris').attr({
-                w: 2 * Math.PI * radius / units,
-                h: 2 * Math.PI * radius / units,
-                x: 300 + 1.1 * radius * Math.cos(rotation),
-                y: 300 + 1.1 * radius * Math.sin(rotation)
-            }).debris();
-            deb.body.SetAngle(rotation);
+            if (0 !== i % (units / 5) && 0 !== (i - 1) % (units / 5)) {
+                rotation = 2 * Math.PI * i / units;
+                deb = Crafty.e('Debris').attr({
+                    w: depth * 2 * Math.PI * radius / units,
+                    h: 2 * Math.PI * radius / units,
+                    x: position.x + radius * Math.cos(rotation),
+                    y: position.y + radius * Math.sin(rotation)
+                }).debris();
+                deb.body.SetAngle(2 * Math.PI * (i + 0.5) / units);
+            }
         }
  
     });
