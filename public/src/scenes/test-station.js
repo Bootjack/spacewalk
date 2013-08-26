@@ -70,19 +70,18 @@ require([
             }
         });
         
-        var i, spin, deb, variance;
-        for (i = 0; i < 0; i += 1) {
-            variance = (Math.random() - 0.5) * 50;
-            spin = i > 1 && i < 6;
-            deb = Crafty.e('Debris').attr({w: 20, h: 256, x: i * 40, y: -25 + variance}).debris();    
-            if (false) deb.spin(i % 6)    
-        }
-        
-        for (i = 0; i < 50; i += 1) {
-            variance = 50 * Math.sin(i % 20);
-            spin = i > 1 && i < 6;
-            deb = Crafty.e('Debris').attr({w: 20, h: 256, x: i * 40, y: 325 + variance}).debris();    
-            if (false) deb.spin(i % 6)         
+        var i, spin, deb, radius, rotation, units;
+        radius = 300;
+        units = 20
+        for (i = 0; i < units; i += 1) {
+            rotation = 2 * Math.PI * (i + 0.5) / units;
+            deb = Crafty.e('Debris').attr({
+                w: 2 * Math.PI * radius / units,
+                h: 2 * Math.PI * radius / units,
+                x: 300 + 1.1 * radius * Math.cos(rotation),
+                y: 300 + 1.1 * radius * Math.sin(rotation)
+            }).debris();
+            deb.body.SetAngle(rotation);
         }
  
     });
