@@ -38,11 +38,20 @@ var require, window;
                         Crafty.scene('test-grappling-gun');
                     });
 
+                Crafty.e('2D, HTML, Mouse')
+                    .attr({x: 325, y: 25, w: 250, h: 25})
+                    .replace('<a href="#" class="scene-link">Linear Level Test</a>')
+                    .bind('Click', function (e) {
+                        e.preventDefault();
+                        Crafty.scene('test-station');
+                    });
+
                 //when everything is loaded, run the main scene
                 require([
                     'src/scenes/test-astronaut',
                     'src/scenes/test-satellite',
-                    'src/scenes/test-grappling-gun'
+                    'src/scenes/test-grappling-gun',
+                    'src/scenes/test-station'
                 ], function () {
 
                 });

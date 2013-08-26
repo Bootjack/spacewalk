@@ -9,15 +9,21 @@ require([], function () {
                 .color('rgba(85, 85, 95, 1.0)');
             return this;   
         },        
-        debris: function () {
+        debris: function (config) {
+            config = config || {};
             this.box2d({
                 bodyType: 'dynamic',
                 density: 7.8 * 1.0,
                 friction: 0.8,
                 restitution: 0.8
             });
-            this.body.ApplyTorque((0.5 + Math.random()) * 10 * this._w * this._h);
+            if (config.randomSpin) {
+                this.spin((Math.random() - 0.5) * 5);
+            }
             return this;
+        },
+        spin: function (magnitude) {
+            this.body.ApplyTorque(magnitude * this._w * this._h);
         }
     })
 });

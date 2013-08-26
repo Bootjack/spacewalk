@@ -28,7 +28,7 @@ require([
             this.propellant = Crafty.e('Storage').storage({
                 material: 'propellant',
                 capacity: 100,
-                quantity: 100
+                quantity: Infinity
             });
 
             this.jets = [

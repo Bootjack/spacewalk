@@ -67,6 +67,7 @@ require([
             
             bodyDef = new Box2D.Dynamics.b2BodyDef;
             bodyDef.type = Box2D.Dynamics.b2Body.b2_dynamicBody;
+            bodyDef.linearDamping = 0.05;
             bodyDef.position.Set(this._x / Crafty.box2D.PTM_RATIO, this._y / Crafty.box2D.PTM_RATIO);
             this.box2d({
                 bodyDef: bodyDef,
@@ -116,10 +117,10 @@ require([
             leftArmJointDef.collideConnected = false;
             leftArmJointDef.enableLimit = true;
             leftArmJointDef.lowerAngle = -0.4 * Math.PI;
-            leftArmJointDef.upperAngle = 0.4 * Math.PI;
+            leftArmJointDef.upperAngle = 0.2 * Math.PI;
             leftArmJointDef.enableMotor = true;
-            leftArmJointDef.motorSpeed = 0;
-       		leftArmJointDef.maxMotorTorque = 0.15;
+            leftArmJointDef.motorSpeed = 0.025 * Math.PI;
+       		leftArmJointDef.maxMotorTorque = 0.1;
             leftArmJointDef.Initialize(
                 this.body,
                 this.arms.left.body,
@@ -132,11 +133,11 @@ require([
             rightArmJointDef = new Box2D.Dynamics.Joints.b2RevoluteJointDef();
             rightArmJointDef.collideConnected = false;
             rightArmJointDef.enableLimit = true;
-            rightArmJointDef.lowerAngle = -0.4 * Math.PI;
+            rightArmJointDef.lowerAngle = -0.2 * Math.PI;
             rightArmJointDef.upperAngle = 0.4 * Math.PI;
             rightArmJointDef.enableMotor = true;
-            rightArmJointDef.motorSpeed = 0;
-       		rightArmJointDef.maxMotorTorque = 0.15;
+            rightArmJointDef.motorSpeed = -0.025 * Math.PI;
+       		rightArmJointDef.maxMotorTorque = 0.1;
             rightArmJointDef.Initialize(
                 this.body,
                 this.arms.right.body,
@@ -174,7 +175,7 @@ require([
                     
                     if (arm && surface) {
                         grasp = new Box2D.Dynamics.Joints.b2FrictionJointDef();
-                        grasp.maxForce = 8;
+                        grasp.maxForce = 9;
                         grasp.maxTorque = 0.5 * Math.PI;
                         grasp.Initialize(arm.body, surface, arm.body.GetWorldPoint(localHandVector));
                         arm.graspJoint = Crafty.box2D.world.CreateJoint(grasp);
