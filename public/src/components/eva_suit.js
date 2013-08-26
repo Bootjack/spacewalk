@@ -79,7 +79,7 @@ require([
                     efficiency: 40,
                     inputs: [this.propellant],
                     x: 0,
-                    y: 8,
+                    y: 7,
                     angle: 0
                 }),
                 // Lateral right jet
@@ -89,7 +89,7 @@ require([
                     efficiency: 40,
                     inputs: [this.propellant],
                     x: this._w,
-                    y: 8,
+                    y: 7,
                     angle: -1 * Math.PI
                 })
             ];

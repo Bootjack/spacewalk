@@ -2,12 +2,13 @@ var Crafty, require;
 
 require([
     'src/components/astronaut',
-    'src/components/debris'
+    'src/components/debris',
+    'src/components/grapple_gun'
 ], function () {
     'use strict';
 
     Crafty.scene('test-station', function () {
-        var astronaut, walls, viewportVelocity;
+        var astronaut, grappleGun, walls, viewportVelocity;
 
         Crafty.viewport.init(800, 600, 'cr-stage');
         Crafty.viewport.clampToEntities = false;
@@ -70,19 +71,42 @@ require([
             }
         });
         
-        var i, height, depth, spin, deb, radius, position, rotation, units;
-        radius = 300;
+        grappleGun = Crafty.e('Grapple_Gun').attr({
+            x: astronaut.arms.right._x + astronaut.arms.right._w + 10,
+            y: astronaut.arms.right._y
+        }).grappleGun({ammo: 3});
+        grappleGun.body.SetAngle(0.5 * Math.PI);
+        grappleGun.affix(astronaut.arms.right);        
+
+        astronaut.bind('KeyDown', function (e) {
+            if (astronaut.isDown(Crafty.keys.SPACE)) {
+                grappleGun.fire();
+            }
+            if (astronaut.isDown(Crafty.keys.C)) {
+                grappleGun.sever();
+            }
+            if (astronaut.isDown(Crafty.keys.R)) {
+                grappleGun.reload();
+            }
+        });
+        
+        var i, hub, depth, spin, deb, radius, rotation, units, jointDef;
+        radius = 600;
         units = 50;
         depth = 2;
-        position = {x: 300, y: 300};
+        
+        hub = Crafty.e('2D, Box2D')
+            .attr({x: 300, y: 300, w: 1, h: 1})
+            .box2d({bodyType: 'dynamic'});
+
         for (i = 0; i < units; i += 1) {
             if (0 !== i % (units / 5) && 0 !== (i - 1) % (units / 5)) {
                 rotation = 2 * Math.PI * i / units;
                 deb = Crafty.e('Debris').attr({
                     w: depth * 2 * Math.PI * radius / units,
                     h: 2 * Math.PI * radius / units,
-                    x: position.x + radius * Math.cos(rotation),
-                    y: position.y + radius * Math.sin(rotation)
+                    x: hub._x + radius * Math.cos(rotation),
+                    y: hub._y + radius * Math.sin(rotation)
                 }).debris();
                 deb.body.SetAngle(2 * Math.PI * (i + 0.5) / units);
             }

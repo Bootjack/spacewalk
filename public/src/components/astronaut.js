@@ -5,12 +5,8 @@ require([
 ], function () {
     'use strict';
     
-    Crafty.b2AddContactListener = function (name, listener) {
+    Crafty.b2ConfigureContactListeners = function () {
         var i, masterListener = new Box2D.Dynamics.b2ContactListener();
-        
-        Crafty._b2ContactListeners = Crafty._b2ContactListeners || {};
-        Crafty._b2ContactListeners[name] = listener;
-
         masterListener.BeginContact = function (contact) {
             for (i in Crafty._b2ContactListeners) {
                 if (Crafty._b2ContactListeners.hasOwnProperty(i) 
@@ -48,8 +44,22 @@ require([
             }
         }
 
-        Crafty.box2D.world.SetContactListener(masterListener);
+        Crafty.box2D.world.SetContactListener(masterListener);    
+    };
+    
+    Crafty.b2AddContactListener = function (name, listener) {       
+        Crafty._b2ContactListeners = Crafty._b2ContactListeners || {};
+        Crafty._b2ContactListeners[name] = listener;
+        
+        Crafty.b2ConfigureContactListeners();
     }
+
+    Crafty.b2RemoveContactListener = function (name) {
+        Crafty._b2ContactListeners = Crafty._b2ContactListeners || {};
+        Crafty._b2ContactListeners[name] = undefined;
+        
+        Crafty.b2ConfigureContactListeners();
+    };
     
     Crafty.c('Astronaut', {
         init: function () {
@@ -61,7 +71,9 @@ require([
 
         astronaut: function () {
             this.requires('Box2D');
-            var self, bodyDef, leftArmJointDef, leftArmJoint, rightArmJointDef, rightArmJoint, suitJointDef, suitJoint;
+            var self, bodyDef, suitJointDef, suitJoint,
+                leftArmJointDef, leftArmJoint, rightArmJointDef, rightArmJoint,
+                leftLegJointDef, leftLegJoint, rightLegJointDef, rightLegJoint;
             
             self = this;
             
@@ -91,7 +103,7 @@ require([
                 .attr({w: 12, h: 8, x: this._x + 2, y: this._y + 2})
                 .color('rgba(0, 0, 0, 1.0)');
             this.attach(this.visor);
-            
+
             this.arms = {
                 left: Crafty.e('2D, Box2D, Canvas, Color, Delay')
                     .attr({x: this._x - 11, y: this._y + 10, w: 12, h: 5})
@@ -174,6 +186,9 @@ require([
                     }
                     
                     if (arm && surface) {
+                        if (arm.graspJoint) {
+                            Crafty.box2D.world.DestroyJoint(arm.graspJoint);
+                        }
                         grasp = new Box2D.Dynamics.Joints.b2FrictionJointDef();
                         grasp.maxForce = 9;
                         grasp.maxTorque = 0.5 * Math.PI;

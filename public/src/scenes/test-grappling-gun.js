@@ -57,13 +57,19 @@ require([
         grappleGun = Crafty.e('Grapple_Gun').attr({
             x: astronaut.arms.right._x + astronaut.arms.right._w + 10,
             y: astronaut.arms.right._y
-        }).grappleGun();
+        }).grappleGun({ammo: 3});
         grappleGun.body.SetAngle(0.5 * Math.PI);
         grappleGun.affix(astronaut.arms.right);
   
-        astronaut.bind('KeyDown', function () {
+        astronaut.bind('KeyDown', function (e) {
             if (astronaut.isDown(Crafty.keys.SPACE)) {
                 grappleGun.fire();
+            }
+            if (astronaut.isDown(Crafty.keys.C)) {
+                grappleGun.sever();
+            }
+            if (astronaut.isDown(Crafty.keys.R)) {
+                grappleGun.reload();
             }
             if (astronaut.isDown(Crafty.keys.X)) {
                 astronaut.letGo();
