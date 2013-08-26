@@ -6,7 +6,7 @@ require(['src/modules/storage'], function () {
     Crafty.c('Grapple_Gun', {
         init: function () {
             this.requires('2D, Canvas, Color')
-                .attr({w: 5, h: 12})
+                .attr({w: 5, h: 12, z: 5})
             this.locked = false;
             this.ammo = Crafty.e('Storage').storage({
                 material: 'hooks',
@@ -51,8 +51,8 @@ require(['src/modules/storage'], function () {
                 this.rope = [];
                 
                 this.head = Crafty.e('2D, Box2D, Canvas, Color, Delay')
-                    .attr({x: this._x, y: this._y, w: 4, h: 8})
-                    .color(this.colorString)
+                    .attr({x: this._x, y: this._y, w: 3, h: 8})
+                    .color('rgba(255, 255, 255, 1.0)')
                     .box2d({
                         bodyType: 'dynamic',
                         density: 7.8 * 0.02,    // 2cm thick solid steel
@@ -63,7 +63,7 @@ require(['src/modules/storage'], function () {
                 this.head.body.SetPositionAndAngle(
                     this.body.GetWorldPoint(new Box2D.Common.Math.b2Vec2(
                         1 / Crafty.box2D.PTM_RATIO,
-                        -6 / Crafty.box2D.PTM_RATIO
+                        -2 / Crafty.box2D.PTM_RATIO
                     )),
                     this.body.GetAngle()
                 );
@@ -92,11 +92,12 @@ require(['src/modules/storage'], function () {
 
         fire: function () {
             var head, self, listener, magnitude;
-            self = this;
-            head = this.head;
             magnitude = 8;
             if (this.latch) {
+                self = this;
+                head = this.head;
                 Crafty.box2D.world.DestroyJoint(this.latch);
+                this.latch = undefined;
                 this.head.body.ApplyForce(
                     this.head.body.GetWorldVector(new Box2D.Common.Math.b2Vec2(0, -1 * magnitude)),
                     this.head.body.GetWorldCenter()
@@ -171,12 +172,12 @@ require(['src/modules/storage'], function () {
             if (!this.locked && distance >= this.segmentInterval) {
                 if (this.ropeLength < this.maxRopeLength) {
                    segment = Crafty.e('2D, Canvas, Color')
-                        .attr({x: this._x + this._w / 2, y: this._y, h: 2, w: 2})
+                        .attr({x: this._x + this._w / 2, y: this._y, h: 3, w: 3})
                         .color(this.colorString);
                         
                     segBodyDef = new Box2D.Dynamics.b2BodyDef();
                     segBodyDef.type = Box2D.Dynamics.b2Body.b2_dynamicBody;
-                    segBodyDef.linearDamping = 0.5;   
+                    segBodyDef.linearDamping = 0.25;   
                     segBodyDef.position.Set(segment._x / Crafty.box2D.PTM_RATIO, segment._y / Crafty.box2D.PTM_RATIO);
                     segment.requires('Box2D');
                     segment.box2d({bodyDef: segBodyDef, density: 0.03, restitution: 0.1, groupIndex: -2});

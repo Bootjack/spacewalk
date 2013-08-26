@@ -71,7 +71,9 @@ require([
 
         astronaut: function () {
             this.requires('Box2D');
-            var self, bodyDef, leftArmJointDef, leftArmJoint, rightArmJointDef, rightArmJoint, suitJointDef, suitJoint;
+            var self, bodyDef, suitJointDef, suitJoint,
+                leftArmJointDef, leftArmJoint, rightArmJointDef, rightArmJoint,
+                leftLegJointDef, leftLegJoint, rightLegJointDef, rightLegJoint;
             
             self = this;
             
@@ -101,7 +103,7 @@ require([
                 .attr({w: 12, h: 8, x: this._x + 2, y: this._y + 2})
                 .color('rgba(0, 0, 0, 1.0)');
             this.attach(this.visor);
-            
+
             this.arms = {
                 left: Crafty.e('2D, Box2D, Canvas, Color, Delay')
                     .attr({x: this._x - 11, y: this._y + 10, w: 12, h: 5})

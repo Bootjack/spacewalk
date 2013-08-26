@@ -2,12 +2,13 @@ var Crafty, require;
 
 require([
     'src/components/astronaut',
-    'src/components/debris'
+    'src/components/debris',
+    'src/components/grapple_gun'
 ], function () {
     'use strict';
 
     Crafty.scene('test-station', function () {
-        var astronaut, walls, viewportVelocity;
+        var astronaut, grappleGun, walls, viewportVelocity;
 
         Crafty.viewport.init(800, 600, 'cr-stage');
         Crafty.viewport.clampToEntities = false;
@@ -67,6 +68,25 @@ require([
             }
             if (astronaut.isDown(Crafty.keys.Z)) {
                  astronaut.setGrasping(!astronaut.grasping);
+            }
+        });
+        
+        grappleGun = Crafty.e('Grapple_Gun').attr({
+            x: astronaut.arms.right._x + astronaut.arms.right._w + 10,
+            y: astronaut.arms.right._y
+        }).grappleGun({ammo: 3});
+        grappleGun.body.SetAngle(0.5 * Math.PI);
+        grappleGun.affix(astronaut.arms.right);        
+
+        astronaut.bind('KeyDown', function (e) {
+            if (astronaut.isDown(Crafty.keys.SPACE)) {
+                grappleGun.fire();
+            }
+            if (astronaut.isDown(Crafty.keys.C)) {
+                grappleGun.sever();
+            }
+            if (astronaut.isDown(Crafty.keys.R)) {
+                grappleGun.reload();
             }
         });
         

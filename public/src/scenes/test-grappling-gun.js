@@ -14,7 +14,7 @@ require([
         Crafty.viewport.clampToEntities = false;
         Crafty.viewport.mouselook(true);
 
-        Crafty.box2D.showDebugInfo();
+        //Crafty.box2D.showDebugInfo();
         
         Crafty.background('rgb(15, 10, 20)');
 
